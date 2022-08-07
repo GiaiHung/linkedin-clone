@@ -1,0 +1,17 @@
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: gray;
+  cursor: pointer;
+}
+
+.option:hover {
+  color: black;
+}
+
+.option__avatar {
+  width: 25px !important;
+  height: 25px !important;
+  object-fit: contain;
+}
