@@ -12,7 +12,7 @@ function Post({ name, description, message, url }) {
   return (
     <div className="post">
       <div className="post_header">
-        <Avatar />
+        <Avatar src={url} alt={name} />
         <div className="post_header_info">
           <h2>{name}</h2>
           <p>{description}</p>
