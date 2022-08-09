@@ -9,5 +9,6 @@
     display: flex;
     gap: 1em;
     min-width: 90vw;
+    min-height: 100vh;
     margin: auto;
 }

@@ -7,8 +7,21 @@ import ChatIcon from '@mui/icons-material/Chat'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import './Header.css'
 import HeaderOptions from './HeaderOptions'
+import { useDispatch } from 'react-redux'
+import { logout } from '../../features/userSlice'
+import { auth } from '../../firebase'
 
 function Header() {
+  const dispatch = useDispatch()
+
+  const logoutApp = () => {
+    // Update the redux ui
+    dispatch(logout())
+
+    // Update auth
+    auth.signOut()
+  }
+
   return (
     <div className="header">
       <div className="header__left">
@@ -25,7 +38,11 @@ function Header() {
         <HeaderOptions Icon={BusinessCenterIcon} title="Jobs" />
         <HeaderOptions Icon={ChatIcon} title="Messaging" />
         <HeaderOptions Icon={NotificationsIcon} title="Notification" />
-        <HeaderOptions avatar='https://cdn.unenvironment.org/2022-03/field-ge4d2466da_1920.jpg' title='Me' />
+        <HeaderOptions
+          avatar="https://cdn.unenvironment.org/2022-03/field-ge4d2466da_1920.jpg"
+          title="Me"
+          onClick={logoutApp}
+        />
       </div>
     </div>
   )
