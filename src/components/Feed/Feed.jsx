@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../../firebase'
 import FlipMove from 'react-flip-move'
+
 import './Feed.css'
+import InputOption from './InputOption'
+import Post from './Post'
+
 import { Avatar } from '@mui/material'
 import CreateIcon from '@mui/icons-material/Create'
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
 import EventIcon from '@mui/icons-material/Event'
 import NewspaperIcon from '@mui/icons-material/Newspaper'
-import InputOption from './InputOption'
-import Post from './Post'
-import { db } from '../../firebase'
-import { collection, addDoc, serverTimestamp, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../features/userSlice'
 
@@ -21,18 +23,22 @@ function Feed() {
   const postsCollectionRef = collection(db, 'posts')
   const q = query(postsCollectionRef, orderBy('timestamp', 'desc'))
 
-  // Get data from redux
   const user = useSelector(selectUser)
-  const { displayName, photoURL, email } = user
 
   const sendPost = (e) => {
     e.preventDefault()
 
+    if (!input.trim() || input.length === 0) {
+      alert('Please type in message')
+      setInput('')
+      return
+    }
+
     addDoc(postsCollectionRef, {
-      name: displayName,
-      description: email,
+      name: user.displayName,
+      description: user.email,
+      url: user.photoURL,
       message: input,
-      url: photoURL,
       timestamp: serverTimestamp(),
     })
 
@@ -41,18 +47,16 @@ function Feed() {
   }
 
   useEffect(() => {
-    onSnapshot(q, (snapshot) =>
+    onSnapshot(q, (snapshot) => {
       setPosts(
         snapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }))
       )
-    )
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  console.log(posts)
 
   return (
     <div className="feed">
@@ -60,9 +64,8 @@ function Feed() {
       <div className="feed_input_container">
         {/* Input */}
         <div className="feed_input">
-          <Avatar src={photoURL} className="input_avatar">
-            {/* If user doesn't have photo */}
-            {email[0].toUpperCase()}
+          <Avatar src={user?.photoURL} alt="avatar">
+            {user?.email[0].toUpperCase()}
           </Avatar>
           <div className="input_text">
             <CreateIcon />
@@ -71,9 +74,9 @@ function Feed() {
                 type="text"
                 spellCheck={false}
                 placeholder="Start a post"
-                ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                ref={inputRef}
               />
             </form>
           </div>
@@ -88,10 +91,10 @@ function Feed() {
         </div>
       </div>
 
-      {/* Feed Content */}
+      {/* Posts */}
       <FlipMove>
-        {posts?.map(({ name, description, message, url, id }) => (
-          <Post key={id} name={name} description={description} message={message} url={url} />
+        {posts.map(({ name, message, url, description, id }) => (
+          <Post key={id} name={name} message={message} url={url} description={description} />
         ))}
       </FlipMove>
     </div>

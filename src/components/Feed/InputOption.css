@@ -1,17 +1,23 @@
 .input_option {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    transition: all 0.2 ease-in-out;
-    padding: 10px;
-    border-radius: 10px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  transition: all 0.2 ease-in-out;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .input_option h5 {
-    color: gray
+  color: gray;
 }
 
 .input_option:hover {
-    background-color: whitesmoke;
+  background-color: whitesmoke;
+}
+
+@media screen and (max-width: 778px) {
+  .input_option {
+    gap: 0.35em;
+  }
 }

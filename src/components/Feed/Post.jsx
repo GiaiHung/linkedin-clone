@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react'
+import React, { forwardRef } from 'react'
 import InputOption from './InputOption'
 import './Post.css'
 
@@ -11,7 +11,7 @@ import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 // Wrap comp around forwardRef to get ref to do animation
 const Post = forwardRef(({ name, description, message, url }, ref) => {
   return (
-    <div ref={ref} className="post">
+    <div className="post" ref={ref}>
       <div className="post_header">
         <Avatar src={url} alt={name} />
         <div className="post_header_info">

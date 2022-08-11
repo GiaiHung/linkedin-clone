@@ -11,7 +11,9 @@
 }
 
 .option__avatar {
-  width: 25px !important;
-  height: 25px !important;
+  width: 40px !important;
+  height: 40px !important;
   object-fit: contain;
 }
+
+

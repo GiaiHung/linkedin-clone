@@ -1,9 +1,9 @@
 import React from 'react'
 import './HeaderOptions.css'
+import {useSelector} from 'react-redux'
+import { selectUser } from '../../features/userSlice'
 
 import { Avatar } from '@mui/material'
-import { useSelector } from 'react-redux'
-import { selectUser } from '../../features/userSlice'
 
 function HeaderOptions({ title, avatar, Icon, onClick }) {
   const user = useSelector(selectUser)
@@ -13,10 +13,10 @@ function HeaderOptions({ title, avatar, Icon, onClick }) {
       {Icon && <Icon className="option__icon" />}
       {avatar && (
         <Avatar src={user?.photoURL} alt="avatar" className="option__avatar" onClick={onClick}>
-          {`${user?.email[0].toUpperCase()}`}
+          {user?.email[0].toUpperCase()}
         </Avatar>
       )}
-      <h3>{title}</h3>
+      {title && <h3>{title}</h3>}
     </div>
   )
 }

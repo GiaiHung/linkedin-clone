@@ -1,12 +1,11 @@
-import { useSelector } from 'react-redux'
-import { selectUser } from '../../features/userSlice'
-
 import { Avatar } from '@mui/material'
+import {useSelector} from 'react-redux'
+import { selectUser } from '../../features/userSlice'
 import './Sidebar.css'
 
 function Sidebar() {
   const user = useSelector(selectUser)
-  const { displayName, photoURL, email } = user
+  const {displayName,email} = user
 
   const sidebarItem = (topic) => (
     <div className="sidebar_item">
@@ -23,9 +22,8 @@ function Sidebar() {
           alt="background"
           className="sidebar_top_background"
         />
-        <Avatar src={photoURL} className="sidebar_top_avatar">
-          {/* If user doesn't have photo */}
-          {email[0].toUpperCase()}
+        <Avatar src={user?.photoURL} alt="avatar">
+          {user?.email[0].toUpperCase()}
         </Avatar>
         <h2>{displayName}</h2>
         <h4>{email}</h4>

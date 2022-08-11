@@ -1,26 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { logout } from '../../features/userSlice'
+import { auth } from '../../firebase'
+import { useDispatch } from 'react-redux'
+
+import './Header.css'
+import HeaderOptions from './HeaderOptions'
+
 import SearchIcon from '@mui/icons-material/Search'
 import HomeIcon from '@mui/icons-material/Home'
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import ChatIcon from '@mui/icons-material/Chat'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import './Header.css'
-import HeaderOptions from './HeaderOptions'
-import { useDispatch } from 'react-redux'
-import { logout } from '../../features/userSlice'
-import { auth } from '../../firebase'
 
 function Header() {
   const dispatch = useDispatch()
+  const getWindowWidth = () => window.innerWidth
+  const [width, setWidth] = useState(getWindowWidth())
 
-  const logoutApp = () => {
-    // Update the redux ui
+  const onLogout = () => {
     dispatch(logout())
-
-    // Update auth
     auth.signOut()
   }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(getWindowWidth())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <div className="header">
@@ -33,12 +43,16 @@ function Header() {
       </div>
 
       <div className="header__right">
-        <HeaderOptions Icon={HomeIcon} title="Home" />
-        <HeaderOptions Icon={SupervisorAccountIcon} title="My Network" />
-        <HeaderOptions Icon={BusinessCenterIcon} title="Jobs" />
-        <HeaderOptions Icon={ChatIcon} title="Messaging" />
-        <HeaderOptions Icon={NotificationsIcon} title="Notification" />
-        <HeaderOptions avatar title='Me' onClick={logoutApp} />
+        {width > 768 && (
+          <>
+            <HeaderOptions Icon={HomeIcon} title="Home" />
+            <HeaderOptions Icon={SupervisorAccountIcon} title="My Network" />
+            <HeaderOptions Icon={BusinessCenterIcon} title="Jobs" />
+            <HeaderOptions Icon={ChatIcon} title="Messaging" />
+            <HeaderOptions Icon={NotificationsIcon} title="Notification" />
+          </>
+        )}
+        <HeaderOptions avatar onClick={onLogout} />
       </div>
     </div>
   )

@@ -1,12 +1,12 @@
+import { useState } from 'react'
+import { auth } from '../../firebase'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth'
-import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../../features/userSlice'
-import { auth } from '../../firebase'
 import './Login.css'
 
 function Login() {
@@ -14,30 +14,17 @@ function Login() {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [profilePic, setProfilePic] = useState('')
+  const [showRegister, setShowRegister] = useState(false)
+
   const dispatch = useDispatch()
 
-  const loginToApp = (e) => {
-    e.preventDefault()
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userAuth) => {
-        dispatch(
-          login({
-            email: userAuth.user.email,
-            uid: userAuth.user.uid,
-            displayName: name,
-            photoURL: profilePic,
-          })
-        )
-      })
-      .catch((error) => alert(error))
-  }
-
   const register = () => {
-    if (!name) return alert('Please enter a full name')
+    setShowRegister(true)
 
-    try {
-      createUserWithEmailAndPassword(auth, email, password).then((userAuth) => {
+    if (name.length === 0) return
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userAuth) => {
         updateProfile(userAuth.user, {
           displayName: name,
           photoURL: profilePic,
@@ -52,11 +39,26 @@ function Login() {
               })
             )
           )
-          .catch((error) => 'user not updated')
+          .catch((error) => alert(error.message))
       })
-    } catch (error) {
-      console.log(error.message)
-    }
+      .catch((error) => alert(error.message))
+  }
+
+  const signin = (e) => {
+    e.preventDefault()
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userAuth) => {
+        dispatch(
+          login({
+            email: userAuth.user.email,
+            uid: userAuth.user.uid,
+            displayName: name,
+            photoURL: userAuth.user.photoURL,
+          })
+        )
+      })
+      .catch((error) => alert(error.message))
   }
 
   return (
@@ -65,18 +67,24 @@ function Login() {
         <img src="/images/login_logo.png" alt="login-logo" className="login_logo" />
 
         <form>
-          <input
-            type="text"
-            placeholder="Full name (required if registering)"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Profile picture URL (optional)"
-            value={profilePic}
-            onChange={(e) => setProfilePic(e.target.value)}
-          />
+          {showRegister ? (
+            <>
+              <input
+                type="text"
+                placeholder="Full name (required if registering)"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Profile picture URL (optional)"
+                value={profilePic}
+                onChange={(e) => setProfilePic(e.target.value)}
+              />
+            </>
+          ) : (
+            <></>
+          )}
           <input
             type="email"
             placeholder="Email"
@@ -91,7 +99,7 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit" onClick={loginToApp}>
+          <button type="submit" onClick={signin}>
             Sign In
           </button>
         </form>

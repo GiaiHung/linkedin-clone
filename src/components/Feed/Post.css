@@ -5,6 +5,12 @@
   background-color: #fff;
 }
 
+@media screen and (max-width: 778px) {
+  .post {
+    max-width: 350px;
+  }
+}
+
 .post_header {
   display: flex;
   align-items: center;
@@ -39,4 +45,14 @@
   justify-content: space-evenly;
   padding: 10px;
   width: 100%;
+}
+
+@media screen and (max-width: 778px) {
+  .post_buttons {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+  }
 }

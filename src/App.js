@@ -1,21 +1,31 @@
-import React, { useEffect } from 'react'
-import './App.css'
-
-import { auth } from './firebase'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectUser, login, logout } from './features/userSlice'
 import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './firebase'
+import './App.css'
 
 import Feed from './components/Feed/Feed'
 import Header from './components/Header/Header'
-import Login from './components/Login/Login'
 import Sidebar from './components/Sidebar/Sidebar'
 import Widget from './components/Widget/Widget'
-
-import { selectUser, login, logout } from './features/userSlice'
-import { useSelector, useDispatch } from 'react-redux'
+import Login from './components/Login/Login'
 
 function App() {
   const user = useSelector(selectUser)
   const dispatch = useDispatch()
+
+  const getWindowWidth = () => window.innerWidth
+  const [width, setWidth] = useState(getWindowWidth())
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(getWindowWidth())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     onAuthStateChanged(auth, (userAuth) => {
@@ -32,20 +42,20 @@ function App() {
         dispatch(logout())
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <div className="app">
       <Header />
-
       {!user ? (
         <Login />
       ) : (
         <div className="app__body">
-          <Sidebar />
+          {/* Responsive */}
+          {width > 768 && <Sidebar />}
           <Feed />
-          <Widget />
+          {width > 768 && <Widget />}
         </div>
       )}
     </div>
