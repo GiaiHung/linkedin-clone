@@ -53,7 +53,7 @@ function Login() {
           login({
             email: userAuth.user.email,
             uid: userAuth.user.uid,
-            displayName: name,
+            displayName: userAuth.user.displayName,
             photoURL: userAuth.user.photoURL,
           })
         )
