@@ -38,11 +38,7 @@ function Header() {
         <HeaderOptions Icon={BusinessCenterIcon} title="Jobs" />
         <HeaderOptions Icon={ChatIcon} title="Messaging" />
         <HeaderOptions Icon={NotificationsIcon} title="Notification" />
-        <HeaderOptions
-          avatar="https://cdn.unenvironment.org/2022-03/field-ge4d2466da_1920.jpg"
-          title="Me"
-          onClick={logoutApp}
-        />
+        <HeaderOptions avatar title='Me' onClick={logoutApp} />
       </div>
     </div>
   )

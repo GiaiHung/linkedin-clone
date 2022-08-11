@@ -8,6 +8,7 @@ import Feed from './components/Feed/Feed'
 import Header from './components/Header/Header'
 import Login from './components/Login/Login'
 import Sidebar from './components/Sidebar/Sidebar'
+import Widget from './components/Widget/Widget'
 
 import { selectUser, login, logout } from './features/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
@@ -18,18 +19,20 @@ function App() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (userAuth) => {
-      if(userAuth) {
-        dispatch(login({
-          email: userAuth.email,
-          uid: userAuth.uid,
-          displayName: userAuth.displayName,
-          photoURL: userAuth.photoURL
-        }))
+      if (userAuth) {
+        dispatch(
+          login({
+            email: userAuth.email,
+            uid: userAuth.uid,
+            displayName: userAuth.displayName,
+            photoURL: userAuth.photoURL,
+          })
+        )
       } else {
         dispatch(logout())
       }
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -40,11 +43,9 @@ function App() {
         <Login />
       ) : (
         <div className="app__body">
-          {/* Sidebar */}
           <Sidebar />
-          {/* Feed */}
           <Feed />
-          {/* Widgets */}
+          <Widget />
         </div>
       )}
     </div>

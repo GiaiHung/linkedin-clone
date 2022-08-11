@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import FlipMove from 'react-flip-move'
 import './Feed.css'
 import { Avatar } from '@mui/material'
 import CreateIcon from '@mui/icons-material/Create'
@@ -10,6 +11,8 @@ import InputOption from './InputOption'
 import Post from './Post'
 import { db } from '../../firebase'
 import { collection, addDoc, serverTimestamp, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../features/userSlice'
 
 function Feed() {
   const [posts, setPosts] = useState([])
@@ -18,14 +21,18 @@ function Feed() {
   const postsCollectionRef = collection(db, 'posts')
   const q = query(postsCollectionRef, orderBy('timestamp', 'desc'))
 
-  const sendPost = async (e) => {
+  // Get data from redux
+  const user = useSelector(selectUser)
+  const { displayName, photoURL, email } = user
+
+  const sendPost = (e) => {
     e.preventDefault()
 
-    await addDoc(postsCollectionRef, {
-      name: 'Elon Musk',
-      description: 'Founder of SpaceX, Tesla',
+    addDoc(postsCollectionRef, {
+      name: displayName,
+      description: email,
       message: input,
-      url: 'https://image.cnbcfm.com/api/v1/image/107063491-16529089492022-05-18t210710z_1773411046_rc2w9u9z7ee9_rtrmadp_0_tesla-musk.jpeg?v=1655979407',
+      url: photoURL,
       timestamp: serverTimestamp(),
     })
 
@@ -53,7 +60,10 @@ function Feed() {
       <div className="feed_input_container">
         {/* Input */}
         <div className="feed_input">
-          <Avatar className="input_avatar" />
+          <Avatar src={photoURL} className="input_avatar">
+            {/* If user doesn't have photo */}
+            {email[0].toUpperCase()}
+          </Avatar>
           <div className="input_text">
             <CreateIcon />
             <form onSubmit={sendPost}>
@@ -79,9 +89,11 @@ function Feed() {
       </div>
 
       {/* Feed Content */}
-      {posts?.map(({ name, description, message, url, id }) => (
-        <Post key={id} name={name} description={description} message={message} url={url} />
-      ))}
+      <FlipMove>
+        {posts?.map(({ name, description, message, url, id }) => (
+          <Post key={id} name={name} description={description} message={message} url={url} />
+        ))}
+      </FlipMove>
     </div>
   )
 }

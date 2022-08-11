@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from 'firebase/auth'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../../features/userSlice'
@@ -14,6 +18,19 @@ function Login() {
 
   const loginToApp = (e) => {
     e.preventDefault()
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userAuth) => {
+        dispatch(
+          login({
+            email: userAuth.user.email,
+            uid: userAuth.user.uid,
+            displayName: name,
+            photoURL: profilePic,
+          })
+        )
+      })
+      .catch((error) => alert(error))
   }
 
   const register = () => {
@@ -63,14 +80,14 @@ function Login() {
           <input
             type="email"
             placeholder="Email"
-            autoComplete='username'
+            autoComplete="username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
-            autoComplete='current-password'
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
