@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { useState, forwardRef, useEffect } from 'react'
 import { db } from '../../firebase'
 import { doc, updateDoc } from 'firebase/firestore'
 import InputOption from './InputOption'
@@ -9,24 +9,56 @@ import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined'
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../features/userSlice'
 
 // Wrap comp around forwardRef to get ref to do animation
 const Post = forwardRef(({ id, name, description, message, url, likes, isLiked }, ref) => {
   const liked = isLiked
-  let likeCount = likes
+  const [isUserLiked, setIsUserLiked] = useState(false)
+  let likeCount = likes || 0
+
+  const user = useSelector(selectUser)
+
+  useEffect(() => {
+    if (liked === undefined) return
+    for (let i = 0; i < liked.length; i++) {
+      if (liked[i] === user.email) {
+        setIsUserLiked(true)
+        return
+      } else {
+        setIsUserLiked(false)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onLike = async () => {
-    if(!liked) {
+    if (!isUserLiked) {
       likeCount++
     } else {
       likeCount--
+    }
+
+    setIsUserLiked(!isUserLiked)
+
+    if (!isUserLiked) {
+      liked.push(user.email)
+    } else {
+      // eslint-disable-next-line array-callback-return
+      const index = liked.findIndex((item) => {
+        if (item.includes(user.email)) {
+          return true
+        }
+      })
+      liked.splice(index, 1)
     }
 
     try {
       const postDocRef = doc(db, 'posts', id)
       await updateDoc(postDocRef, {
         likes: likeCount,
-        isLiked: !liked,
+        isLiked: liked,
       })
     } catch (error) {
       alert(error)
@@ -48,16 +80,18 @@ const Post = forwardRef(({ id, name, description, message, url, likes, isLiked }
       </div>
 
       <div className="post_buttons">
-        <h6>
-          <span>
-            <img src="/images/like-btn.png" alt="like-btn" />
-          </span>{' '}
-          {likeCount}
-        </h6>
+        {likes > 0 && (
+          <h6>
+            <span>
+              <img src="/images/like-btn.png" alt="like-btn" />
+            </span>{' '}
+            {likeCount}
+          </h6>
+        )}
         <InputOption
           Icon={ThumbUpAltOutlinedIcon}
           title="Like"
-          color={liked ? 'blueviolet' : 'gray'}
+          color={isUserLiked ? 'blueviolet' : 'gray'}
           onClick={onLike}
         />
         <InputOption Icon={ChatOutlinedIcon} title="Comment" color="gray" />
