@@ -1,4 +1,6 @@
 import React, { forwardRef } from 'react'
+import { db } from '../../firebase'
+import { doc, updateDoc } from 'firebase/firestore'
 import InputOption from './InputOption'
 import './Post.css'
 
@@ -9,7 +11,28 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 
 // Wrap comp around forwardRef to get ref to do animation
-const Post = forwardRef(({ name, description, message, url }, ref) => {
+const Post = forwardRef(({ id, name, description, message, url, likes, isLiked }, ref) => {
+  const liked = isLiked
+  let likeCount = likes
+
+  const onLike = async () => {
+    if(!liked) {
+      likeCount++
+    } else {
+      likeCount--
+    }
+
+    try {
+      const postDocRef = doc(db, 'posts', id)
+      await updateDoc(postDocRef, {
+        likes: likeCount,
+        isLiked: !liked,
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   return (
     <div className="post" ref={ref}>
       <div className="post_header">
@@ -25,7 +48,18 @@ const Post = forwardRef(({ name, description, message, url }, ref) => {
       </div>
 
       <div className="post_buttons">
-        <InputOption Icon={ThumbUpAltOutlinedIcon} title="Like" color="gray" />
+        <h6>
+          <span>
+            <img src="/images/like-btn.png" alt="like-btn" />
+          </span>{' '}
+          {likeCount}
+        </h6>
+        <InputOption
+          Icon={ThumbUpAltOutlinedIcon}
+          title="Like"
+          color={liked ? 'blueviolet' : 'gray'}
+          onClick={onLike}
+        />
         <InputOption Icon={ChatOutlinedIcon} title="Comment" color="gray" />
         <InputOption Icon={ShareOutlinedIcon} title="Share" color="gray" />
         <InputOption Icon={SendOutlinedIcon} title="Send" color="gray" />
