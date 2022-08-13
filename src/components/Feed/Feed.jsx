@@ -93,8 +93,8 @@ function Feed() {
 
       {/* Posts */}
       <FlipMove>
-        {posts.map(({ name, message, url, description, id, likes, isLiked }) => (
-          <Post key={id} id={id} name={name} message={message} url={url} description={description} likes={likes} isLiked={isLiked} />
+        {posts.map(({ name, message, url, description, id, likes, isLiked, comments }) => (
+          <Post key={id} id={id} name={name} message={message} url={url} description={description} likes={likes} isLiked={isLiked} comments={comments} />
         ))}
       </FlipMove>
     </div>

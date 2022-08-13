@@ -1,0 +1,29 @@
+.comment {
+    max-width: 610px;
+    padding: 10px;
+}
+
+.comment_header {
+    display: flex;
+    align-items: center;
+}
+
+.comment_header img {
+    width: 40px !important;
+    height: 40px !important;
+    object-fit: cover;
+}
+
+.comment_header form {
+    width: 100%;
+}
+
+.comment_header input {
+    flex: 1;
+    padding: .9em;
+    margin: 0 .5em;
+    border: 1px solid gray;
+    border-radius: 999px;
+    width: 100%;
+}
+

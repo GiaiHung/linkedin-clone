@@ -1,8 +1,7 @@
 .sidebar {
     background-color: #fff;
     position: sticky;
-    top: 80px;
-    flex: 0.2;
+    top: 50px;
     border-radius: 10px;
     text-align: center;
     height: fit-content;

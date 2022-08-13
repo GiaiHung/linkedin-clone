@@ -3,6 +3,7 @@
   padding: 10px;
   border-radius: 10px;
   background-color: #fff;
+  max-width: 650px;
 }
 
 @media screen and (max-width: 778px) {
@@ -83,3 +84,4 @@
     top: -15px;
   }
 }
+
